@@ -201,7 +201,7 @@ export default function LicensesPage() {
             doc.setTextColor(255, 255, 255);
             doc.setFont('helvetica', 'bold');
             doc.setFontSize(26);
-            doc.text('QSender', 40, 52);
+            doc.text('Msgora', 40, 52);
             doc.setFont('helvetica', 'normal');
             doc.setFontSize(10);
             doc.text('License Activation Invoice', 40, 70);
@@ -241,7 +241,7 @@ export default function LicensesPage() {
                 startY: 224,
                 head: [['Description', 'Details', 'Amount']],
                 body: [
-                    ['Product', 'QSender Software License Activation', fmtMoney(baseAmount)],
+                    ['Product', 'Msgora Software License Activation', fmtMoney(baseAmount)],
                     ['Plan', String(l.plan || '-').toUpperCase(), ''],
                     ['Validity', `${issuedDate} to ${dueDate}`, ''],
                     ['Device Limit', String(l.deviceLimit || 1), ''],
@@ -289,7 +289,7 @@ export default function LicensesPage() {
             doc.setFontSize(9);
             doc.text([
                 '• License is non-transferable and bound to the registered machine.',
-                '• QSender is not liable for any restrictions imposed by WhatsApp / Meta.',
+                '• Msgora is not liable for any restrictions imposed by WhatsApp / Meta.',
                 '• All outbound messages must comply with Meta\'s WhatsApp policy guidelines.',
             ], 52, tosY + 34, { lineHeightFactor: 1.6 });
 
@@ -297,10 +297,10 @@ export default function LicensesPage() {
             doc.rect(0, pageHeight - 44, pageWidth, 44, 'F');
             doc.setTextColor(100, 116, 139);
             doc.setFontSize(9);
-            doc.text('Thank you for choosing QSender.', pageWidth / 2, pageHeight - 20, { align: 'center' });
+            doc.text('Thank you for choosing Msgora.', pageWidth / 2, pageHeight - 20, { align: 'center' });
 
             const safeName = (l.clientName || 'client').toLowerCase().replace(/[^a-z0-9]+/g, '-').replace(/(^-|-$)/g, '');
-            doc.save(`qsender-invoice-${safeName}-${new Date().toISOString().slice(0, 10)}.pdf`);
+            doc.save(`msgora-invoice-${safeName}-${new Date().toISOString().slice(0, 10)}.pdf`);
         } finally {
             setInvoiceBusy(false);
         }
@@ -388,7 +388,7 @@ export default function LicensesPage() {
         const url  = URL.createObjectURL(blob);
         const a    = document.createElement('a');
         a.href = url;
-        a.download = `qsender-licenses-${new Date().toISOString().slice(0, 10)}.csv`;
+        a.download = `msgora-licenses-${new Date().toISOString().slice(0, 10)}.csv`;
         document.body.appendChild(a);
         a.click();
         a.remove();
@@ -402,7 +402,7 @@ export default function LicensesPage() {
         const nowTs = Math.floor(Date.now() / 1000);
         const doc   = new jsPDF({ orientation: 'landscape', unit: 'pt', format: 'a4' });
         doc.setFontSize(14);
-        doc.text('QSender Licenses — Full Export', 36, 30);
+        doc.text('Msgora Licenses — Full Export', 36, 30);
         doc.setFontSize(10);
         doc.text(`Generated: ${new Date().toLocaleString('en-IN')}`, 36, 48);
         const body = licenses.map(l => {
@@ -427,7 +427,7 @@ export default function LicensesPage() {
                 6: { cellWidth: 50 }, 7: { cellWidth: 280 },
             },
         });
-        doc.save(`qsender-licenses-${new Date().toISOString().slice(0, 10)}.pdf`);
+        doc.save(`msgora-licenses-${new Date().toISOString().slice(0, 10)}.pdf`);
     };
 
     const downloadLicenses = async () => {

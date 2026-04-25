@@ -19,14 +19,14 @@ export default function AppLayout({ children }) {
 
     useEffect(() => {
         if (!getToken()) { router.replace('/login'); return; }
-        const cached = localStorage.getItem('qsender_admin_user');
+        const cached = localStorage.getItem('msgora_admin_user');
         if (cached) try { setUser(JSON.parse(cached)); } catch {}
 
         apiFetch('/api/auth/me').then(r => {
             if (!r) return;
             if (r.ok) {
                 setUser(r.data);
-                localStorage.setItem('qsender_admin_user', JSON.stringify(r.data));
+                localStorage.setItem('msgora_admin_user', JSON.stringify(r.data));
             }
             setReady(true);
         });
@@ -49,7 +49,7 @@ export default function AppLayout({ children }) {
         <div style={{ display: 'flex', height: '100vh', overflow: 'hidden', background: '#0a0d14' }}>
             <aside className="sidebar">
                 <div className="sidebar-logo">
-                    <div className="sidebar-logo-name">QSender</div>
+                    <div className="sidebar-logo-name">Msgora</div>
                     <div className="sidebar-logo-sub">License Management</div>
                 </div>
 

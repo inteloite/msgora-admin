@@ -22,7 +22,7 @@ export default function LoginPage() {
             const data = await res.json();
             if (!res.ok) { setError(data.error || 'Login failed'); return; }
             setToken(data.token);
-            localStorage.setItem('qsender_admin_user', JSON.stringify({ username: data.username }));
+            localStorage.setItem('msgora_admin_user', JSON.stringify({ username: data.username }));
             router.replace('/dashboard');
         } catch {
             setError('Connection failed. Check your network.');
@@ -42,7 +42,7 @@ export default function LoginPage() {
                 borderRadius: 14, padding: '36px 32px',
             }}>
                 <div style={{ textAlign: 'center', marginBottom: 30 }}>
-                    <div style={{ fontSize: 30, fontWeight: 800, color: '#7c3aed', letterSpacing: -1 }}>QSender</div>
+                    <div style={{ fontSize: 30, fontWeight: 800, color: '#7c3aed', letterSpacing: -1 }}>Msgora</div>
                     <div style={{ fontSize: 20, fontWeight: 700, color: '#e2e8f0', marginTop: 4 }}>Admin Panel</div>
                     <div style={{ fontSize: 13, color: '#4a5980', marginTop: 6 }}>Sign in to manage licenses</div>
                 </div>

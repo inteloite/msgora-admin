@@ -1,7 +1,7 @@
 import './globals.css';
 
 export const metadata = {
-    title: 'QSender Admin',
+    title: 'Msgora Admin',
     description: 'License Management Panel',
 };
 
