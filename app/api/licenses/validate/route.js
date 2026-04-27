@@ -2,7 +2,7 @@ import { NextResponse } from 'next/server';
 import { getLicense, saveLicense } from '@/lib/kv';
 import { validateKey } from '@/lib/license';
 
-// PUBLIC endpoint – called by the QSender desktop app on startup / activation
+// PUBLIC endpoint – called by the Msgora desktop app on startup / activation
 export async function POST(req) {
     try {
         const { key, machineId } = await req.json();
