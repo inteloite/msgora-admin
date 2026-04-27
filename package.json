@@ -8,8 +8,8 @@
     "start": "next start"
   },
   "dependencies": {
-    "@vercel/kv": "^1.0.1",
     "bcryptjs": "^2.4.3",
+    "ioredis": "^5.10.1",
     "jose": "^5.2.4",
     "jspdf": "^4.2.1",
     "jspdf-autotable": "^5.0.7",

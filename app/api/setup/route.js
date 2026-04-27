@@ -1,7 +1,7 @@
 import { NextResponse } from 'next/server';
 import bcrypt from 'bcryptjs';
 import { randomUUID } from 'crypto';
-import { kv } from '@vercel/kv';
+import { saveAdmin } from '@/lib/kv';
 
 export async function GET() {
     try {
@@ -18,21 +18,8 @@ export async function GET() {
             active: true,
         };
 
-        // Clear old admin keys
-        const oldIds = await kv.smembers('admins');
-        for (const oldId of (oldIds || [])) {
-            const oldAdmin = await kv.get(`admin:${oldId}`);
-            if (oldAdmin?.username) {
-                await kv.del(`admin:u:${oldAdmin.username}`);
-            }
-            await kv.del(`admin:${oldId}`);
-        }
-        await kv.del('admins');
-
-        // Save new admin
-        await kv.set(`admin:${id}`, admin);
-        await kv.set(`admin:u:${username}`, id);
-        await kv.sadd('admins', id);
+        // Save new admin (saveAdmin handles clearing via overwrite)
+        await saveAdmin(admin);
 
         return NextResponse.json({
             success: true,
