@@ -438,6 +438,12 @@ export default function LicensesPage() {
     };
 
     const now = Math.floor(Date.now() / 1000);
+    const FREE_PLANS    = ['trial1day', 'trial', 'weekly'];
+    const LICENSE_LIMIT = 200;
+    const quotaCount    = licenses.filter(l => !FREE_PLANS.includes(l.plan)).length;
+    const quotaPct      = Math.min(100, Math.round((quotaCount / LICENSE_LIMIT) * 100));
+    const quotaColor    = quotaPct >= 100 ? '#ef4444' : quotaPct >= 80 ? '#f59e0b' : '#22c55e';
+    const atLimit       = quotaCount >= LICENSE_LIMIT;
 
     return (
         <>
@@ -446,7 +452,16 @@ export default function LicensesPage() {
                 <div className="page-header">
                     <div>
                         <div className="page-title">Licenses</div>
-                        <div className="page-subtitle">{licenses.length} total issued</div>
+                        <div className="page-subtitle" style={{ display: 'flex', alignItems: 'center', gap: 10 }}>
+                            <span>{licenses.length} total issued</span>
+                            <span style={{ display: 'flex', alignItems: 'center', gap: 6, background: '#161c2d', border: '1px solid #252d42', borderRadius: 99, padding: '2px 10px' }}>
+                                <span style={{ fontSize: 12, fontWeight: 700, color: quotaColor }}>{quotaCount}/{LICENSE_LIMIT}</span>
+                                <span style={{ width: 60, height: 5, background: '#1e2640', borderRadius: 99, overflow: 'hidden', display: 'inline-block' }}>
+                                    <span style={{ display: 'block', width: `${quotaPct}%`, height: '100%', background: quotaColor, borderRadius: 99, transition: 'width .4s' }} />
+                                </span>
+                            </span>
+                            {atLimit && <span style={{ fontSize: 11, color: '#ef4444', fontWeight: 600 }}>⚠ Limit reached</span>}
+                        </div>
                     </div>
                     <div style={{ display: 'flex', gap: 8, alignItems: 'center' }}>
                         <select className="form-select" style={{ width: 110 }} value={exportFormat} onChange={e => setExportFormat(e.target.value)}>
@@ -456,7 +471,12 @@ export default function LicensesPage() {
                         <button className="btn btn-ghost" onClick={downloadLicenses} disabled={exportBusy || licenses.length === 0}>
                             {exportBusy ? 'Preparing…' : 'Download'}
                         </button>
-                        <button className="btn btn-primary" onClick={() => { setShowGen(true); setGenKey(''); setGeneratedLicense(null); setForm(EMPTY_FORM); }}>
+                        <button
+                            className="btn btn-primary"
+                            onClick={() => { setShowGen(true); setGenKey(''); setGeneratedLicense(null); setForm(EMPTY_FORM); }}
+                            disabled={atLimit}
+                            title={atLimit ? 'License limit of 200 reached' : ''}
+                        >
                             + Generate Key
                         </button>
                     </div>

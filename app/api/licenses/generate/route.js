@@ -1,17 +1,30 @@
 import { NextResponse } from 'next/server';
 import { requireAuth } from '@/lib/auth';
-import { saveLicense } from '@/lib/kv';
+import { saveLicense, listAllLicenses } from '@/lib/kv';
 import { generateKey, planToExpiry } from '@/lib/license';
+
+const LICENSE_LIMIT = 200;
 
 export async function POST(req) {
     const { error, status, session } = await requireAuth(req);
     if (error) return NextResponse.json({ error }, { status });
 
+    // Enforce 200-license limit (trials and weekly excluded)
+    const FREE_PLANS = ['trial1day', 'trial', 'weekly'];
+    const existing   = await listAllLicenses();
+    const body       = await req.json();
+    const incomingPlan = body.plan || '';
+    if (!FREE_PLANS.includes(incomingPlan)) {
+        const quotaCount = existing.filter(l => !FREE_PLANS.includes(l.plan)).length;
+        if (quotaCount >= LICENSE_LIMIT)
+            return NextResponse.json({ error: `License limit of ${LICENSE_LIMIT} reached. Cannot generate more paid licenses.` }, { status: 403 });
+    }
+
     const {
         clientName, clientPhone, clientEmail, machineId,
         plan, deviceLimit, customDays, notes, price, discountedPrice, features,
         businessCategory, website,
-    } = await req.json();
+    } = body;
 
     const DEFAULT_FEATURES = {
         mobile: true, trustBuilder: true, autoReply: true,

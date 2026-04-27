@@ -45,6 +45,12 @@ export default function DashboardPage() {
     const expired    = licenses.filter(l => !l.revoked && !l.isLifetime && l.expiryTs <= now).length;
     const issuedToday = licenses.filter(l => (l.issuedAt || 0) >= todayStart).length;
 
+    const FREE_PLANS    = ['trial1day', 'trial', 'weekly'];
+    const LICENSE_LIMIT = 200;
+    const quotaCount    = licenses.filter(l => !FREE_PLANS.includes(l.plan)).length;
+    const quotaPct      = Math.min(100, Math.round((quotaCount / LICENSE_LIMIT) * 100));
+    const quotaColor    = quotaPct >= 100 ? '#ef4444' : quotaPct >= 80 ? '#f59e0b' : '#22c55e';
+
     const planCount = licenses.reduce((acc, l) => {
         if (!l.revoked) acc[l.plan] = (acc[l.plan] || 0) + 1;
         return acc;
@@ -72,6 +78,16 @@ export default function DashboardPage() {
                                     <div className="stat-label">Total Licenses</div>
                                     <div className="stat-value stat-accent">{total}</div>
                                     <div className="stat-sub">All time issued</div>
+                                </div>
+                                <div className="stat-card" style={{ gridColumn: 'span 2' }}>
+                                    <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: 6 }}>
+                                        <div className="stat-label">License Quota</div>
+                                        <div style={{ fontSize: 13, fontWeight: 700, color: quotaColor }}>{quotaCount} / {LICENSE_LIMIT}</div>
+                                    </div>
+                                    <div style={{ background: '#1e2640', borderRadius: 99, height: 8, overflow: 'hidden', marginBottom: 6 }}>
+                                        <div style={{ width: `${quotaPct}%`, height: '100%', background: quotaColor, borderRadius: 99, transition: 'width .4s' }} />
+                                    </div>
+                                    <div className="stat-sub">{LICENSE_LIMIT - quotaCount > 0 ? `${LICENSE_LIMIT - quotaCount} remaining` : '⚠ Limit reached'} — trials & weekly excluded</div>
                                 </div>
                                 <div className="stat-card">
                                     <div className="stat-label">Active</div>
